@@ -32,7 +32,7 @@ public class UserInput {
             return;
         }
 
-
+        
         // testing converting results
 //        System.out.println("---------------------- RESULT ----------------------");
 //        System.out.print("Message in bytes: ");
@@ -66,7 +66,7 @@ public class UserInput {
         }
     }
 
-    private static byte[] hexStringToByteArray(String hex) {
+    public byte[] hexStringToByteArray(String hex) {
         int len = hex.length();
         byte[] data = new byte[len / 2];
         for (int i = 0; i < len; i += 2) {
