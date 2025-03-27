@@ -4,18 +4,24 @@ import java.math.BigInteger;
 import java.util.Scanner;
 
 public class UserInput {
-    public void input() {
+    DESAlgorithm des;
 
+    public UserInput() {
+        this.des = new DESAlgorithm();
+    }
+
+
+    public void input() {
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("Choose format of your message: ");
         System.out.println("[1]. Text (e.g. 'Hello World!')");
-        System.out.println("[2]. Hexagonal (e.g. '48656C6C6F2C20576F726C6421')");
+        System.out.println("[2]. Hexagonal (e.g. '7BFF')");
         System.out.print("(choice): ");
         int format = scanner.nextInt();
         scanner.nextLine();
 
-        System.out.print("Enter your message for encryption: ");
+        System.out.print("Enter your message for encryption (e.g. '48656C6C6F2C2057'): ");
         String message = scanner.nextLine();
         System.out.println(message);
 
@@ -25,21 +31,11 @@ public class UserInput {
             byte[] messageBytes = message.getBytes();
             messageBigInt = new BigInteger(1, messageBytes); // 1 means that the number is positive
         } else if (format == 2) {
-            byte[] messageBytes = hexStringToByteArray(message);
             messageBigInt = new BigInteger(message, 16);
         } else {
             System.out.println("Invalid format");
             return;
         }
-
-        
-        // testing converting results
-//        System.out.println("---------------------- RESULT ----------------------");
-//        System.out.print("Message in bytes: ");
-//        for (byte b : messageBytes) {
-//            System.out.print(String.format("%02X ", b));
-//        }
-//        System.out.println("\n----------------------------------------------------");
 
 
         // getting key
@@ -56,8 +52,8 @@ public class UserInput {
         int option = scanner.nextInt();
 
         if (option == 1) {
-//            BigInteger encryptedBytes = encryptBlock(messageBigInt, key);
-//            System.out.println("Encrypted message (hex): " + encryptedBytes.toString(16));
+            BigInteger encryptedBytes = des.encode(messageBigInt, key);
+            System.out.println("Encrypted message (hex): " + encryptedBytes.toString(16).toUpperCase());
         } else if (option == 2) {
 //            BigInteger decryptedBytes = decryptBlock(messageBigInt, key);
 //            System.out.println("Decrypted message: " + new String(decryptedBytes.toByteArray()));

@@ -7,8 +7,8 @@ import org.slf4j.LoggerFactory;
 public class DESAlgorithm {
     private static final Logger logger = LoggerFactory.getLogger(DESAlgorithm.class);
 
-    BigInteger originalMessage = new BigInteger("0123456789ABCDEF", 16);
-    BigInteger originalKey = new BigInteger("0123456789ABCDEF", 16);
+    //    BigInteger originalMessage = new BigInteger("0123456789ABCDEF", 16);
+//    BigInteger originalKey = new BigInteger("0123456789ABCDEF", 16);
 
     // tablica permutacji
     final byte[] IP = {
@@ -318,8 +318,8 @@ public class DESAlgorithm {
     }
 
     // potem dodac tu argument BigInteger originalMessage
-    public BigInteger encode() {
-        BigInteger permutedMsg = applyIP(originalMessage);
+    public BigInteger encode(BigInteger msg, BigInteger key) {
+        BigInteger permutedMsg = applyIP(msg);
 
         // Dzielimy permutedMsg na pol (2 x 32-bit), otrzymujac L0 i R0
         BigInteger L0 = permutedMsg.shiftRight(32).and(new BigInteger("FFFFFFFF", 16));
@@ -329,7 +329,7 @@ public class DESAlgorithm {
         logger.info("R0: " + R0.toString(2) + " [OK]");
 
         // generujemy podklucze
-        BigInteger[] roundKeys = generateRoundKeys(originalKey);
+        BigInteger[] roundKeys = generateRoundKeys(key);
 
         BigInteger L = L0;
         BigInteger R = R0;
