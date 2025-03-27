@@ -159,7 +159,6 @@ public class DESAlgorithm {
         return permutedKey;
     }
 
-    // TODO: upewnic sie czy to jest poprawne
     public BigInteger applyPC2(BigInteger shiftedKey) {
         BigInteger permutedKey = BigInteger.ZERO;
 
@@ -279,7 +278,6 @@ public class DESAlgorithm {
             // wyodrebniamy 6-bitowy blok
             int block = data.shiftRight(42 - i * 6).and(new BigInteger("3F", 16)).intValue();
 
-            // TODO: sprawdzic czy poprawnie wyznacza row i col
             // pobieramy wiersz i kolumne
             int row = ((block & 0x20) >> 4) | (block & 0x01);
             int col = (block >> 1) & 0x0F;
