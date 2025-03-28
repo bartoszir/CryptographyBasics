@@ -7,9 +7,6 @@ import org.slf4j.LoggerFactory;
 public class DESAlgorithm {
     private static final Logger logger = LoggerFactory.getLogger(DESAlgorithm.class);
 
-    //    BigInteger originalMessage = new BigInteger("0123456789ABCDEF", 16);
-    //    BigInteger originalKey = new BigInteger("0123456789ABCDEF", 16);
-
     // tablica permutacji
     static final byte[] IP = {
             58, 50, 42, 34, 26, 18, 10, 2,
@@ -130,7 +127,7 @@ public class DESAlgorithm {
     // ---------------------------------------------------------
 
     // Permuting the original message through IP (64-bit -> 64-bit)
-    public BigInteger applyIP(BigInteger originalMsg) {
+    private BigInteger applyIP(BigInteger originalMsg) {
         BigInteger permuted = BigInteger.ZERO;
 
         for (int i = 0; i < IP.length; i++) {
@@ -144,7 +141,7 @@ public class DESAlgorithm {
         return permuted;
     }
 
-    public BigInteger applyPC1(BigInteger originalKey) {
+    private BigInteger applyPC1(BigInteger originalKey) {
         BigInteger permutedKey = BigInteger.ZERO;
 
         for (int i = 0; i < PC1.length; i++) {
@@ -157,7 +154,7 @@ public class DESAlgorithm {
         return permutedKey;
     }
 
-    public BigInteger applyPC2(BigInteger shiftedKey) {
+    private BigInteger applyPC2(BigInteger shiftedKey) {
         BigInteger permutedKey = BigInteger.ZERO;
 
         for (int i = 0; i < PC2.length; i++) {
@@ -173,11 +170,11 @@ public class DESAlgorithm {
     // @shifts - tablica przesuniec dla kazdej rundy
     // @round - numer aktualnej rundy (0-15)
     // @size - dlugosc bloku (28 dla C/D)
-    public static BigInteger leftShift(BigInteger num, byte[] shifts, int round, int size) {
+    private static BigInteger leftShift(BigInteger num, byte[] shifts, int round, int size) {
         int currentShift = shifts[round] & 0xFF; // konwersja byte do int (0-255)
 
         // maska dla size bitów (np. 0xFFFFFFF dla 28 bitów)
-        BigInteger mask = BigInteger.ONE.shiftLeft(size).subtract(BigInteger.ONE); // maska nam zapewnia ze wynik ma 28 bitow
+        BigInteger mask = java.math.BigInteger.ONE.shiftLeft(size).subtract(java.math.BigInteger.ONE); // maska nam zapewnia ze wynik ma 28 bitow
 
         // przesunięcie cykliczne w lewo
         BigInteger shifted = num.shiftLeft(currentShift)
@@ -187,7 +184,7 @@ public class DESAlgorithm {
     }
 
     // key scheduling
-    public BigInteger[] generateRoundKeys(BigInteger originalKey) {
+    private BigInteger[] generateRoundKeys(BigInteger originalKey) {
         BigInteger permutedKey = applyPC1(originalKey); // 56-bitowy klucz po PC-1
 
 
@@ -319,6 +316,30 @@ public class DESAlgorithm {
         BigInteger combined = R.shiftLeft(32).or(L);
 
         // "Final Permutation" / "Inverse Initial Permutation"
+        return applyFP(combined);
+    }
+
+    // odwrotnosc procesu szyfrowania
+    public BigInteger decode(BigInteger cipherTxt, BigInteger key) {
+        BigInteger permutedMsg = applyIP(cipherTxt);
+
+        // dzielimy na R16 i L16
+        BigInteger R16 = permutedMsg.shiftRight(32).and(new BigInteger("FFFFFFFF", 16));
+        BigInteger L16 = permutedMsg.and(new BigInteger("FFFFFFFF", 16));
+
+        BigInteger[] roundKeys = generateRoundKeys(key);
+
+        // odwrotne rundy (uzywamy klucza w odwarotnej kolejnosci)
+        BigInteger L = L16;
+        BigInteger R = R16;
+
+        for (int i = 15; i >= 0; i--) {
+            BigInteger previousR = R;
+            R = L;
+            L = previousR.xor(feistelFunction(R, roundKeys[i]));
+        }
+
+        BigInteger combined = L.shiftLeft(32).or(R);
         return applyFP(combined);
     }
 }
