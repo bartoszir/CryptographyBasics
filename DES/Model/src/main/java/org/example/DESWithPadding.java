@@ -1,7 +1,8 @@
 package org.example;
 
 import java.math.BigInteger;
-import java.util.Collections;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 public class DESWithPadding {
     private DESAlgorithm des = new DESAlgorithm();
@@ -75,5 +76,36 @@ public class DESWithPadding {
             result.append(String.format("%016X", decrypted));
         }
         return removePadding(result.toString());
+    }
+
+    private boolean isHex(String input) {
+        return input.matches("^[0-9A-Fa-f]+$");
+    }
+
+    private String textToHex(String text) {
+        return String.format("%0" + (text.length() * 2) + "X", new BigInteger(1, text.getBytes(StandardCharsets.UTF_8)));
+    }
+
+
+    private String hexToText(String hex) {
+        byte[] bytes = new BigInteger(hex, 16).toByteArray();
+
+        if (bytes.length > 0 && bytes[0] == 0) {
+            bytes = Arrays.copyOfRange(bytes, 1, bytes.length);
+        }
+
+        return new String(bytes, StandardCharsets.UTF_8);
+    }
+
+    public String chooseInputMessageFormat(String input) {
+        return (!isHex(input)) ? textToHex(input) : input;
+    }
+
+    public String chooseOutputMessageFormat(boolean showAsHex, String output) {
+        if (showAsHex) {
+            return isHex(output) ? output : textToHex(output);
+        } else {
+            return isHex(output) ? hexToText(output) : output;
+        }
     }
 }

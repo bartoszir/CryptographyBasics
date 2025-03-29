@@ -52,6 +52,7 @@ public class UserInput {
         try {
             String hexMessage = (format == 1) ? textToHex(message) : message;
             String encrypted = des.encrypt(hexMessage, key);
+
             System.out.println("\nEcnrypted message (hex): " + encrypted);
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());

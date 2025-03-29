@@ -7,6 +7,7 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Line?>
@@ -108,7 +109,7 @@
                                  <children>
                                     <TextField fx:id="encryptionText" prefHeight="25.0" prefWidth="360.0" promptText="Here type in plain text message">
                                        <HBox.margin>
-                                          <Insets />
+                                          <Insets top="2.0" />
                                        </HBox.margin>
                                     </TextField>
                                  </children>
@@ -317,6 +318,16 @@
                                           <Insets bottom="3.0" top="15.0" />
                                        </HBox.margin>
                                     </Text>
+                                    <ToggleButton fx:id="hexDecryptedTextButton" mnemonicParsing="false" onAction="#hexDecryptedTextButtonToggled" text="HEX" textFill="#6f6f6f">
+                                       <HBox.margin>
+                                          <Insets bottom="5.0" left="10.0" top="10.0" />
+                                       </HBox.margin>
+                                    </ToggleButton>
+                                    <ToggleButton fx:id="txtDecryptedTextButton" mnemonicParsing="false" onAction="#txtDecryptedTextButtonToggled" style="-fx-background-color: #000000;" text="TXT" textFill="WHITE">
+                                       <HBox.margin>
+                                          <Insets bottom="5.0" left="10.0" top="10.0" />
+                                       </HBox.margin>
+                                    </ToggleButton>
                                  </children>
                               </HBox>
                               <HBox prefHeight="250.0" prefWidth="217.0">
