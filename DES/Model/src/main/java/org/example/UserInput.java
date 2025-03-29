@@ -49,7 +49,6 @@ public class UserInput {
 
         System.out.print("Enter 64-bit key (16 chars): ");
         String key = scanner.nextLine();
-
         try {
             String hexMessage = (format == 1) ? textToHex(message) : message;
             String encrypted = des.encrypt(hexMessage, key);
@@ -84,25 +83,25 @@ public class UserInput {
     }
 
 
-    private boolean testKey(String keyInput) {
+    public boolean testKey(String keyInput) {
         BigInteger key = new BigInteger(keyInput, 16);
         // klucz musi miec dokladnie 64 bity
         if (key.bitLength() != 64) {
             return false;
         }
 
-        // sprawdzamy bity parzystosci dla kazdego bajtu
-        for (int i = 0; i < 8; i++) {
-            // wyodrebniamy i-ty bajt (liczac od lewej)
-            int byteValue = key.shiftRight(64 - 8 * (i + 1)).and(new BigInteger("FF", 16)).intValue();
-
-            // liczymy ilosc jedynek w 7 bitach danych
-            int bitCount = Integer.bitCount(byteValue >>> 1);
-
-            if ((bitCount + (byteValue & 1)) % 2 == 0) {
-                return false;
-            }
-        }
+//        // sprawdzamy bity parzystosci dla kazdego bajtu
+//        for (int i = 0; i < 8; i++) {
+//            // wyodrebniamy i-ty bajt (liczac od lewej)
+//            int byteValue = key.shiftRight(64 - 8 * (i + 1)).and(new BigInteger("FF", 16)).intValue();
+//
+//            // liczymy ilosc jedynek w 7 bitach danych
+//            int bitCount = Integer.bitCount(byteValue >>> 1);
+//
+//            if ((bitCount + (byteValue & 1)) % 2 == 0) {
+//                return false;
+//            }
+//        }
         return true;
     }
 

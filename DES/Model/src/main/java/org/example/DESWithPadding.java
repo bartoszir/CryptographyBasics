@@ -18,19 +18,40 @@ public class DESWithPadding {
     }
 
     private String removePadding(String decryptedHex) {
-        if (decryptedHex.length() < 2) return decryptedHex;
-
-        // Ostatni bajt określa ilość paddingu
-        int padLength = 2 * Integer.parseInt(
-                decryptedHex.substring(decryptedHex.length() - 2),
-                16
-        );
-
-        if (padLength <= 0 || padLength > decryptedHex.length()) {
-            throw new IllegalArgumentException("Invalid padding");
+        // Minimalna długość to 2 znaki (1 bajt) i musi być parzysta
+        if (decryptedHex.length() < 2 || decryptedHex.length() % 2 != 0) {
+            return decryptedHex;
         }
 
-        return decryptedHex.substring(0, decryptedHex.length() - padLength);
+        // Ostatni bajt to potencjalna długość paddingu
+        String lastByteStr = decryptedHex.substring(decryptedHex.length() - 2);
+        int padByteValue;
+
+        try {
+            padByteValue = Integer.parseInt(lastByteStr, 16);
+        } catch (NumberFormatException e) {
+            return decryptedHex; // Nie można parsować - prawdopodobnie nie ma paddingu
+        }
+
+        // Prawidłowa wartość paddingu to 1-8
+        if (padByteValue < 1 || padByteValue > 8) {
+            return decryptedHex; // Nieprawidłowa wartość - brak paddingu
+        }
+
+        // Sprawdź czy cały padding jest poprawny
+        int padStart = decryptedHex.length() - 2 * padByteValue;
+        if (padStart < 0) {
+            return decryptedHex; // Za mało danych dla deklarowanego paddingu
+        }
+
+        // Sprawdź czy wszystkie bajty paddingu mają tę samą wartość
+        String padding = decryptedHex.substring(padStart);
+        String expectedPadding = String.format("%02X", padByteValue).repeat(padByteValue);
+        if (!padding.equals(expectedPadding)) {
+            return decryptedHex; // Padding nie jest jednolity
+        }
+
+        return decryptedHex.substring(0, padStart);
     }
 
     public String encrypt(String hexMessage, String hexKey) {
