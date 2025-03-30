@@ -5,15 +5,21 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.event.ActionEvent;
 
 import org.example.DESWithPadding;
+import org.example.FileDESDao;
+
+import java.io.File;
+import java.io.IOException;
 
 
 public class SimulationController {
     private Stage primaryStage;
     private final DESWithPadding des = new DESWithPadding();
+    private final FileDESDao fileDao = new FileDESDao();
 
     @FXML private TextField encryptionText;
     @FXML private TextField encryptionKey;
@@ -139,6 +145,56 @@ public class SimulationController {
             decryptedTextArea.setText(formattedText);
         }
     }
+
+    @FXML
+    private void handleLoadKey() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open Key File");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("DES File", "*.DESKey"));
+        File file = fileChooser.showOpenDialog(primaryStage);
+
+        if (file != null) {
+            try  {
+                String key = fileDao.loadFromFile(file.getAbsolutePath());
+                // String key = "FEDCBA9876543210";
+                encryptionKey.clear();
+                encryptionKey.setText(key);
+            } catch (Exception e) {
+                System.out.println("Error during loading from file: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @FXML
+    private void handleSaveKey() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save Key File");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("DES File", "*.DESKey"));
+
+        File file = fileChooser.showSaveDialog(primaryStage);
+        String key = encryptionKey.getText();
+        if (file != null) {
+            try {
+                fileDao.saveToFile(key, file.getAbsolutePath());
+            } catch (Exception e) {
+                System.out.println("Error during saving to file: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @FXML
+    private void handleLoadEncryptionText(){}
+
+    @FXML
+    private void handleSaveEncryptionText(){}
+
+    @FXML
+    private void handleLoadDecryptedText(){}
+
+    @FXML
+    private void handleSaveDecryptedText(){}
 
     public void setPrimaryStage(Stage primaryStage) { this.primaryStage = primaryStage; }
 

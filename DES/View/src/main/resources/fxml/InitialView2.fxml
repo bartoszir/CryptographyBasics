@@ -18,11 +18,24 @@
    <children>
       <MenuBar VBox.vgrow="ALWAYS">
         <menus>
-          <Menu mnemonicParsing="false" text="File">
+          <Menu mnemonicParsing="false" text="Key">
             <items>
-              <MenuItem mnemonicParsing="false" text="Close" />
+              <MenuItem fx:id="loadKey" mnemonicParsing="false" onAction="#handleLoadKey" text="Load key" />
+                  <MenuItem fx:id="saveKey" mnemonicParsing="false" onAction="#handleSaveKey" text="Save key" />
             </items>
           </Menu>
+            <Menu mnemonicParsing="false" text="Plain Text">
+              <items>
+                <MenuItem fx:id="loadEncryptionText" mnemonicParsing="false" onAction="#handleLoadEncryptionText" text="Load encryption text" />
+                  <MenuItem fx:id="saveEncryptionText" mnemonicParsing="false" onAction="#handleSaveEncryptionText" text="Save encryption text" />
+              </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Cipher Text">
+              <items>
+                <MenuItem fx:id="loadDecryptedText" mnemonicParsing="false" onAction="#handleLoadDecryptedText" text="Load decrypted text" />
+                  <MenuItem fx:id="saveDecryptedText" mnemonicParsing="false" onAction="#handleSaveDecryptedText" text="Save decrypted text" />
+              </items>
+            </Menu>
         </menus>
       </MenuBar>
       <VBox maxHeight="40.0" minHeight="35.0" prefHeight="29.0" prefWidth="600.0" style="-fx-border-color: #aba9a2;" VBox.vgrow="ALWAYS">
@@ -179,7 +192,7 @@
                               </HBox>
                               <HBox prefHeight="250.0" prefWidth="217.0">
                                  <children>
-                                    <TextArea fx:id="cipherTextArea" minHeight="250.0" minWidth="100.0" prefHeight="250.0" prefWidth="305.0">
+                                    <TextArea fx:id="cipherTextArea" minHeight="250.0" minWidth="100.0" prefHeight="250.0" prefWidth="305.0" wrapText="true">
                                        <HBox.margin>
                                           <Insets right="35.0" />
                                        </HBox.margin>
@@ -332,7 +345,7 @@
                               </HBox>
                               <HBox prefHeight="250.0" prefWidth="217.0">
                                  <children>
-                                    <TextArea fx:id="decryptedTextArea" minHeight="250.0" minWidth="100.0" prefHeight="250.0" prefWidth="305.0">
+                                    <TextArea fx:id="decryptedTextArea" minHeight="250.0" minWidth="100.0" prefHeight="250.0" prefWidth="305.0" wrapText="true">
                                        <HBox.margin>
                                           <Insets right="35.0" />
                                        </HBox.margin>
