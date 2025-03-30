@@ -156,10 +156,13 @@ public class SimulationController {
 
         if (file != null) {
             try  {
-                String key = fileDao.loadFromFile(file.getAbsolutePath());
-                // String key = "FEDCBA9876543210";
+//                String key = fileDao.loadFromFile(file.getAbsolutePath());
+                byte[] input = fileDao.loadBinaryFile(file.getAbsolutePath());
+                String hexKey = des.bytesToHex(input);
                 encryptionKey.clear();
-                encryptionKey.setText(key);
+                encryptionKey.setText(hexKey);
+                decryptionKey.clear();
+                decryptionKey.setText(hexKey);
             } catch (Exception e) {
                 showErrorDialog("Load Error", "Failed to load key from file: " + e.getMessage());
             }
@@ -176,7 +179,8 @@ public class SimulationController {
         String key = encryptionKey.getText();
         if (file != null) {
             try {
-                fileDao.saveToFile(key, file.getAbsolutePath());
+                byte[] input = des.hexToBytes(key);
+                fileDao.saveBinaryFile(input, file.getAbsolutePath());
             } catch (Exception e) {
                 showErrorDialog("Save Error", "Failed to save key to the file: " + e.getMessage());
             }
@@ -217,7 +221,9 @@ public class SimulationController {
 
         if (file != null) {
             try {
-                fileDao.saveToFile(text, file.getAbsolutePath());
+                byte[] output = des.hexToBytes(text);
+//                fileDao.saveToFile(text, file.getAbsolutePath());
+                fileDao.saveBinaryFile(output, file.getAbsolutePath());
             } catch (Exception e) {
                 showErrorDialog("Save Error", "Failed to save cipher text to file: " + e.getMessage());
             }
@@ -234,14 +240,16 @@ public class SimulationController {
         File file = fileChooser.showOpenDialog(primaryStage);
         if (file != null) {
             try {
-                String text = fileDao.loadFromFile(file.getAbsolutePath());
+//                String text = fileDao.loadFromFile(file.getAbsolutePath());
+                byte[] input = fileDao.loadBinaryFile(file.getAbsolutePath());
+                String hexData = des.bytesToHex(input);
                 decryptionText.clear();
-                decryptionText.setText(text);
+                decryptionText.setText(hexData);
             } catch (Exception e) {
-                System.out.println("Error during loading from file: " + e.getMessage());
                 showErrorDialog("Load Error", "Failed to load from file: " + e.getMessage());
             }
         }
+        showInfoDialog("Read", "Successfully read encrypted file: " + file.getAbsolutePath());
     }
 
     @FXML
@@ -255,7 +263,7 @@ public class SimulationController {
 
         if (file != null) {
             try {
-                byte[] output = hexToBytes(text);
+                byte[] output = des.hexToBytes(text);
                 fileDao.saveBinaryFile(output, file.getAbsolutePath());
             } catch (Exception e) {
                 System.out.println("Error during saving to file: " + e.getMessage());
@@ -263,31 +271,6 @@ public class SimulationController {
             }
         }
         showInfoDialog("Save", "Decrypted text saved successfully to file: " + file.getAbsolutePath());
-    }
-
-    public static byte[] hexToBytes(String text)
-    {
-        if (text == null) {
-            return null;
-        } else if (text.length() < 2) {
-            return null;
-        }
-        else {
-            if (text.length() % 2 != 0) {
-                text+='0';
-            }
-            int length = text.length() / 2;
-            byte[] output = new byte[length];
-            for (int i = 0; i < length; i++)
-            {
-                try {
-                    output[i] = (byte) Integer.parseInt(text.substring(i * 2, i * 2 + 2), 16);
-                } catch (Exception e) {
-                    showErrorDialog("Save Error", "Failed to convert hex to byte: " + e.getMessage());
-                }
-            }
-            return output;
-        }
     }
 
     public void setPrimaryStage(Stage primaryStage) { this.primaryStage = primaryStage; }

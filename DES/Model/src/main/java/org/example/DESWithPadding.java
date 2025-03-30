@@ -121,10 +121,38 @@ public class DESWithPadding {
     public String bytesToHex(byte[] bytes) {
         char[] hexChars = new char[bytes.length * 2];
         for (int i = 0; i < bytes.length; i++) {
+            // konwertujemy 8 bitow na int (32 bity)
             int v = bytes[i] & 0xFF;
+            // przesuwamy bity w prawo o 4 pozycje, dzielimy przez 16. co daje nam wartosc starszego polbajtu
+            // i pobieramy odpowiadajacy znak dla starszego polbajtu
             hexChars[i * 2] = HEX_ARRAY[v >>> 4];
+            // nakladamy maske bitowa ktora wyciaga 4 mlodsze bity (0-15) i pobieramy znak hex odpowiadajacy
             hexChars[i * 2 + 1] = HEX_ARRAY[v & 0x0F];
         }
         return new String(hexChars);
+    }
+
+    public static byte[] hexToBytes(String text)
+    {
+        if (text == null) {
+            return null;
+        } else if (text.length() < 2) {
+            return null;
+        }
+        else {
+            if (text.length() % 2 != 0) {
+                text+='0';
+            }
+            int length = text.length() / 2;
+            byte[] output = new byte[length];
+            for (int i = 0; i < length; i++)
+            {
+                try {
+                    output[i] = (byte) Integer.parseInt(text.substring(i * 2, i * 2 + 2), 16);
+                } catch (Exception e) {
+                }
+            }
+            return output;
+        }
     }
 }
