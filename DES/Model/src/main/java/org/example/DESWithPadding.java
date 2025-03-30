@@ -6,6 +6,7 @@ import java.util.Arrays;
 
 public class DESWithPadding {
     private DESAlgorithm des = new DESAlgorithm();
+    private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
 
     private String addPadding(String hexMessage) {
         int padLength = 16 - (hexMessage.length() % 16);
@@ -75,7 +76,15 @@ public class DESWithPadding {
             BigInteger decrypted = des.decode(new BigInteger(block, 16), new BigInteger(hexKey, 16));
             result.append(String.format("%016X", decrypted));
         }
-        return removePadding(result.toString());
+
+        String decryptedHex = removePadding(result.toString());
+
+        // upewniamy sie ze dlugosc jest parzysta
+        if (decryptedHex.length() % 2 != 0) {
+            decryptedHex = "0" + decryptedHex;
+        }
+
+        return decryptedHex;
     }
 
     private boolean isHex(String input) {
@@ -107,5 +116,15 @@ public class DESWithPadding {
         } else {
             return isHex(output) ? hexToText(output) : output;
         }
+    }
+
+    public String bytesToHex(byte[] bytes) {
+        char[] hexChars = new char[bytes.length * 2];
+        for (int i = 0; i < bytes.length; i++) {
+            int v = bytes[i] & 0xFF;
+            hexChars[i * 2] = HEX_ARRAY[v >>> 4];
+            hexChars[i * 2 + 1] = HEX_ARRAY[v & 0x0F];
+        }
+        return new String(hexChars);
     }
 }

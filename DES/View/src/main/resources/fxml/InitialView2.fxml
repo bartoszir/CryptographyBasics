@@ -26,14 +26,14 @@
           </Menu>
             <Menu mnemonicParsing="false" text="Encryption">
               <items>
-                <MenuItem fx:id="loadEncryptionText" mnemonicParsing="false" onAction="#handleLoadEncryptionText" text="Load encryption text" />
-                  <MenuItem fx:id="saveCipherText" mnemonicParsing="false" onAction="#handleSaveCipherText" text="Save cipher text" />
+                <MenuItem fx:id="loadEncryptionText" mnemonicParsing="false" onAction="#handleLoadEncryptionText" text="Load source file" />
+                  <MenuItem fx:id="saveCipherText" mnemonicParsing="false" onAction="#handleSaveCipherText" text="Save encrypted file" />
               </items>
             </Menu>
             <Menu mnemonicParsing="false" text="Decryption">
               <items>
-                <MenuItem fx:id="loadCipherText" mnemonicParsing="false" onAction="#handleLoadCipherText" text="Load cipher text" />
-                  <MenuItem fx:id="saveDecryptedText" mnemonicParsing="false" onAction="#handleSaveDecryptedText" text="Save decrypted text" />
+                <MenuItem fx:id="loadCipherText" mnemonicParsing="false" onAction="#handleLoadCipherText" text="Load encrypted file" />
+                  <MenuItem fx:id="saveDecryptedText" mnemonicParsing="false" onAction="#handleSaveDecryptedText" text="Save decrypted file" />
               </items>
             </Menu>
         </menus>
