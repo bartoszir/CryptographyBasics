@@ -24,15 +24,15 @@
                   <MenuItem fx:id="saveKey" mnemonicParsing="false" onAction="#handleSaveKey" text="Save key" />
             </items>
           </Menu>
-            <Menu mnemonicParsing="false" text="Plain Text">
+            <Menu mnemonicParsing="false" text="Encryption">
               <items>
                 <MenuItem fx:id="loadEncryptionText" mnemonicParsing="false" onAction="#handleLoadEncryptionText" text="Load encryption text" />
-                  <MenuItem fx:id="saveEncryptionText" mnemonicParsing="false" onAction="#handleSaveEncryptionText" text="Save encryption text" />
+                  <MenuItem fx:id="saveCipherText" mnemonicParsing="false" onAction="#handleSaveCipherText" text="Save cipher text" />
               </items>
             </Menu>
-            <Menu mnemonicParsing="false" text="Cipher Text">
+            <Menu mnemonicParsing="false" text="Decryption">
               <items>
-                <MenuItem fx:id="loadDecryptedText" mnemonicParsing="false" onAction="#handleLoadDecryptedText" text="Load decrypted text" />
+                <MenuItem fx:id="loadCipherText" mnemonicParsing="false" onAction="#handleLoadCipherText" text="Load cipher text" />
                   <MenuItem fx:id="saveDecryptedText" mnemonicParsing="false" onAction="#handleSaveDecryptedText" text="Save decrypted text" />
               </items>
             </Menu>

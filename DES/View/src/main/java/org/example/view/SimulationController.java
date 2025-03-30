@@ -13,7 +13,6 @@ import org.example.DESWithPadding;
 import org.example.FileDESDao;
 
 import java.io.File;
-import java.io.IOException;
 
 
 public class SimulationController {
@@ -106,6 +105,8 @@ public class SimulationController {
 
             String decrypted = des.decrypt(encryptedText, keyInput);
             decryptedTextArea.setText(decrypted);
+            updateButtonStyles();
+            refreshOutputFormat();
         } catch (Exception e) {
             decryptedTextArea.setText("Error during decryption: " + e.getMessage());
             e.printStackTrace();
@@ -115,10 +116,12 @@ public class SimulationController {
     private void updateButtonStyles() {
         if (txtDecryptedTextButton.isSelected()) {
             txtDecryptedTextButton.setStyle("-fx-background-color: #000000; -fx-text-fill: WHITE;");
-            hexDecryptedTextButton.setStyle("-fx-background-color: transparent; -fx-text-fill: #6f6f6f; -fx-border-color: #6f6f6f; -fx-border-width: 1px; -fx-border-radius: 3px;");
+            hexDecryptedTextButton.setStyle("-fx-background-color: transparent; -fx-text-fill: #6f6f6f; " +
+                    "-fx-border-color: #6f6f6f; -fx-border-width: 1px; -fx-border-radius: 3px;");
         } else {
             hexDecryptedTextButton.setStyle("-fx-background-color: #000000; -fx-text-fill: WHITE;");
-            txtDecryptedTextButton.setStyle("-fx-background-color: transparent; -fx-text-fill: #6f6f6f; -fx-border-color: #6f6f6f; -fx-border-width: 1px; -fx-border-radius: 3px;");
+            txtDecryptedTextButton.setStyle("-fx-background-color: transparent; -fx-text-fill: #6f6f6f; " +
+                    "-fx-border-color: #6f6f6f; -fx-border-width: 1px; -fx-border-radius: 3px;");
         }
     }
 
@@ -185,16 +188,81 @@ public class SimulationController {
     }
 
     @FXML
-    private void handleLoadEncryptionText(){}
+    private void handleLoadEncryptionText(){
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open File For Encryption");
+        fileChooser.getExtensionFilters().addAll();
+
+        File file = fileChooser.showOpenDialog(primaryStage);
+
+        if (file != null) {
+            try {
+                String text = fileDao.loadFromFile(file.getAbsolutePath());
+                encryptionText.clear();
+                encryptionText.setText(text);
+            } catch (Exception e) {
+                System.out.println("Error during loading from file: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
+    }
 
     @FXML
-    private void handleSaveEncryptionText(){}
+    private void handleSaveCipherText(){
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save File Encrypted File");
+        fileChooser.getExtensionFilters().addAll();
+
+        File file = fileChooser.showOpenDialog(primaryStage);
+        String text = cipherTextArea.getText();
+
+        if (file != null) {
+            try {
+                fileDao.saveToFile(text, file.getAbsolutePath());
+            } catch (Exception e) {
+                System.out.println("Error during saving to file: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
+    }
 
     @FXML
-    private void handleLoadDecryptedText(){}
+    private void handleLoadCipherText(){
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open File For Decryption");
+        fileChooser.getExtensionFilters().addAll();
+
+        File file = fileChooser.showOpenDialog(primaryStage);
+        if (file != null) {
+            try {
+                String text = fileDao.loadFromFile(file.getAbsolutePath());
+                decryptionText.clear();
+                decryptionText.setText(text);
+            } catch (Exception e) {
+                System.out.println("Error during loading from file: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
+    }
 
     @FXML
-    private void handleSaveDecryptedText(){}
+    private void handleSaveDecryptedText(){
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save File For Decryption");
+        fileChooser.getExtensionFilters().addAll();
+
+        File file = fileChooser.showSaveDialog(primaryStage);
+        String text = decryptedTextArea.getText();
+
+        if (file != null) {
+            try {
+                fileDao.saveToFile(text, file.getAbsolutePath());
+            } catch (Exception e) {
+                System.out.println("Error during saving to file: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
+    }
 
     public void setPrimaryStage(Stage primaryStage) { this.primaryStage = primaryStage; }
 
