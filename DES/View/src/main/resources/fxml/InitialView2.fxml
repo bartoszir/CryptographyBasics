@@ -219,7 +219,14 @@
                               </Button>
                            </children>
                         </VBox>
-                        <HBox prefHeight="113.0" prefWidth="316.0" HBox.hgrow="ALWAYS" />
+                        <HBox prefHeight="113.0" prefWidth="316.0" HBox.hgrow="ALWAYS">
+                           <children>
+                              <ToggleButton fx:id="encryptingFileButton" mnemonicParsing="false" onAction="#encryptingFileButtonToggled" text="FILE" textFill="#727272">
+                                 <HBox.margin>
+                                    <Insets top="15.0" />
+                                 </HBox.margin>
+                              </ToggleButton>
+                           </children></HBox>
                      </children>
                   </HBox>
                </children>
@@ -372,7 +379,14 @@
                               </Button>
                            </children>
                         </VBox>
-                        <HBox prefHeight="113.0" prefWidth="316.0" HBox.hgrow="ALWAYS" />
+                        <HBox prefHeight="113.0" prefWidth="316.0" HBox.hgrow="ALWAYS">
+                           <children>
+                              <ToggleButton fx:id="decryptingFileButton" mnemonicParsing="false" onAction="#decryptingFileButtonToggled" text="FILE" textFill="#727272">
+                                 <HBox.margin>
+                                    <Insets top="15.0" />
+                                 </HBox.margin>
+                              </ToggleButton>
+                           </children></HBox>
                      </children>
                   </HBox>
                </children>

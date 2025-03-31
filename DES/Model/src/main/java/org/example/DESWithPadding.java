@@ -132,7 +132,7 @@ public class DESWithPadding {
         return new String(hexChars);
     }
 
-    public static byte[] hexToBytes(String text)
+    public byte[] hexToBytes(String text)
     {
         if (text == null) {
             return null;

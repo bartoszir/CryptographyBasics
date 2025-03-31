@@ -9,14 +9,20 @@ import javafx.event.ActionEvent;
 import org.example.DESWithPadding;
 import org.example.FileDESDao;
 
-import javax.swing.*;
 import java.io.File;
+
+import java.util.Base64;
 
 
 public class SimulationController {
     private Stage primaryStage;
     private final DESWithPadding des = new DESWithPadding();
     private final FileDESDao fileDao = new FileDESDao();
+    private String encryptionTextData;
+    private String cipherTextData;
+    private String decryptionTextData;
+    private boolean encryptingFile = false;
+    private boolean decryptingFile = false;
 
     @FXML private TextField encryptionText;
     @FXML private TextField encryptionKey;
@@ -27,6 +33,9 @@ public class SimulationController {
     @FXML private TextArea decryptedTextArea;
     @FXML private ToggleButton txtDecryptedTextButton;
     @FXML private ToggleButton hexDecryptedTextButton;
+
+    @FXML private ToggleButton encryptingFileButton;
+    @FXML private ToggleButton decryptingFileButton;
 
     private final ToggleGroup formatToggleGroup = new ToggleGroup();
 
@@ -57,10 +66,29 @@ public class SimulationController {
 
             String plainText = des.chooseInputMessageFormat(plainTextInput);
 
-            String encrypted = des.encrypt(plainText, keyInput);
-            cipherTextArea.setText(encrypted);
+            encryptionTextData = des.encrypt(plainText, keyInput);
+
+            if (!encryptingFile) {
+                byte[] encryptedBytes = des.hexToBytes(encryptionTextData);
+//                String rawString = new String(encryptedBytes, StandardCharsets.UTF_8);
+//                cipherTextArea.setText(rawString);
+                String base64String = Base64.getEncoder().encodeToString(encryptedBytes);
+                cipherTextArea.setText(base64String);
+                decryptionText.setText(base64String);
+
+
+
+//                cipherTextArea.setText(encryptionTextData);
+//                decryptionText.setText(encryptionTextData);
+
+            } else {
+                showInfoDialog("Encoding", "Successfully encrypted the file. Now you can save it");
+                encryptingFileButtonToggled();
+                handleSaveCipherText();
+                encryptionText.clear();
+            }
             decryptionKey.setText(keyInput);
-            decryptionText.setText(encrypted);
+
 
         } catch (Exception e) {
             cipherTextArea.setText("Error during encryption: " + e.getMessage());
@@ -93,18 +121,40 @@ public class SimulationController {
     @FXML
     private void decryptButtonClicked(ActionEvent event) {
         try {
-            String encryptedText = decryptionText.getText();
+            String cipherTextInput = decryptionText.getText();
             String keyInput = decryptionKey.getText();
+            String encryptedText;
+
+            if (!decryptingFile) {
+                if (cipherTextInput.matches("[0-9A-Fa-f]")) {
+                    encryptedText = cipherTextInput;
+                } else {
+//                    encryptedText = des.bytesToHex(cipherTextInput.getBytes());
+                    byte[] bytes = Base64.getDecoder().decode(cipherTextInput);
+                    encryptedText =  des.bytesToHex(bytes);
+                }
+            } else {
+                encryptedText = cipherTextInput;
+            }
+
 
             if (!keyInput.matches("[0-9A-Fa-f]{16}")) {
                 decryptedTextArea.setText("Key must be 8 characters (64 bits) long!");
                 return;
             }
 
-            String decrypted = des.decrypt(encryptedText, keyInput);
-            decryptedTextArea.setText(decrypted);
-            updateButtonStyles();
-            refreshOutputFormat();
+            decryptionTextData = des.decrypt(encryptedText, keyInput);
+
+            if (!decryptingFile) {
+                decryptedTextArea.setText(decryptionTextData);
+                updateButtonStyles();
+                refreshOutputFormat();
+            } else {
+                showInfoDialog("Decryption", "Successfully decrypted the file. Now you can save it");
+                decryptingFileButtonToggled();
+                handleSaveDecryptedText();
+                decryptionText.clear();
+            }
         } catch (Exception e) {
             decryptedTextArea.setText("Error during decryption: " + e.getMessage());
             e.printStackTrace();
@@ -190,6 +240,8 @@ public class SimulationController {
 
     @FXML
     private void handleLoadEncryptionText(){
+        encryptingFileButtonToggled();
+
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open File For Encryption");
         fileChooser.getExtensionFilters().addAll();
@@ -217,7 +269,7 @@ public class SimulationController {
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("DES File", "*.DESCipher"));
 
         File file = fileChooser.showSaveDialog(primaryStage);
-        String text = cipherTextArea.getText();
+        String text = encryptionTextData;
 
         if (file != null) {
             try {
@@ -233,6 +285,8 @@ public class SimulationController {
 
     @FXML
     private void handleLoadCipherText(){
+        decryptingFileButtonToggled();
+
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open File For Decryption");
         fileChooser.getExtensionFilters().addAll();
@@ -259,7 +313,7 @@ public class SimulationController {
         fileChooser.getExtensionFilters().addAll();
 
         File file = fileChooser.showSaveDialog(primaryStage);
-        String text = decryptedTextArea.getText();
+        String text = decryptionTextData;
 
         if (file != null) {
             try {
@@ -271,6 +325,18 @@ public class SimulationController {
             }
         }
         showInfoDialog("Save", "Decrypted text saved successfully to file: " + file.getAbsolutePath());
+    }
+
+    @FXML
+    private void encryptingFileButtonToggled() {
+        encryptingFileButton.setSelected(!encryptingFile);
+        encryptingFile = encryptingFileButton.isSelected();
+    }
+
+    @FXML
+    private void decryptingFileButtonToggled() {
+        decryptingFileButton.setSelected(!decryptingFile);
+        decryptingFile = decryptingFileButton.isSelected();
     }
 
     public void setPrimaryStage(Stage primaryStage) { this.primaryStage = primaryStage; }
