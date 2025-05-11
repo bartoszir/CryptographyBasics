@@ -1,11 +1,8 @@
 package org.example;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
 public class FileDESDao {
     public byte[] loadBinaryFile(String filePath) throws IOException {

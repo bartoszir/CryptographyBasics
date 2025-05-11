@@ -1,20 +1,21 @@
 package org.example.view;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.event.ActionEvent;
-
 import org.example.DESWithPadding;
 import org.example.FileDESDao;
 
 import java.io.File;
-
 import java.util.Base64;
 
 
-public class SimulationController {
+public class DESController {
     private Stage primaryStage;
     private final DESWithPadding des = new DESWithPadding();
     private final FileDESDao fileDao = new FileDESDao();
@@ -244,7 +245,6 @@ public class SimulationController {
 
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open File For Encryption");
-        fileChooser.getExtensionFilters().addAll();
 
         File file = fileChooser.showOpenDialog(primaryStage);
 
@@ -357,5 +357,30 @@ public class SimulationController {
         alert.showAndWait();
     }
 
+    @FXML
+    private void handleDesViewClicked() {
 
+    }
+
+    @FXML
+    private void handleSchnorrViewClicked(ActionEvent event) {
+        try {
+            // wczytujemy nowy FXML
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/SchnorrView.fxml"));
+            Parent schnorrRoot = loader.load();
+
+            // pobieramy kontroler Schnorra i przekazujemy Stage
+            SchnorrController schnorrController = loader.getController();
+            schnorrController.setPrimaryStage(primaryStage);
+
+            // przelaczamy scene
+            Scene scene = new Scene(schnorrRoot, 900, 600);
+            primaryStage.setScene(scene);
+            primaryStage.setTitle("Schnorr");
+            primaryStage.show();
+        } catch (Exception e) {
+            showErrorDialog("Błąd przełączania", "Nie udało się przełączyć na widok Schnorra:\n" + e.getMessage());
+            e.printStackTrace();
+        }
+    }
 }

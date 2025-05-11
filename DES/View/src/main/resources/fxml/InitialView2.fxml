@@ -18,6 +18,12 @@
    <children>
       <MenuBar VBox.vgrow="ALWAYS">
         <menus>
+            <Menu mnemonicParsing="false" text="PROGRAM">
+              <items>
+                <MenuItem fx:id="desView" mnemonicParsing="false" onAction="#handleDesViewClicked" text="DES" />
+                  <MenuItem fx:id="schnorrView" mnemonicParsing="false" onAction="#handleSchnorrViewClicked" text="Schnorr" />
+              </items>
+            </Menu>
           <Menu mnemonicParsing="false" text="Key">
             <items>
               <MenuItem fx:id="loadKey" mnemonicParsing="false" onAction="#handleLoadKey" text="Load key" />
